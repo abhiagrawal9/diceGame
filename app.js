@@ -1,3 +1,4 @@
+"use strict";
 /*
 # GAME RULES
 - The game has 2 players, playing in rounds
@@ -10,17 +11,11 @@
 
 // document.querySelector('#current-' + activePlayer).innerHTML = '<em>'+dice+'</em>';
 // var value = document.querySelector('#score-0').textContent; // getter
-"use strict";
-let scores, roundScore, activePlayer;
-scores = [0, 0];
-roundScore = 0;
-activePlayer = 0; // 0 : FirstPlayer , 1 : SecondPlayer
 
-document.querySelector('.dice').style.display = 'none'; // setting the css property
-document.getElementById('score-0').textContent = 0;
-document.getElementById('score-1').textContent = 0;
-document.getElementById('current-0').textContent = 0;
-document.getElementById('current-1').textContent = 0;
+
+let scores, roundScore, activePlayer;
+
+init();
 
 document.querySelector('.btn-roll').addEventListener('click', function () {
     // generate random number
@@ -45,14 +40,42 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
 document.querySelector('.btn-hold').addEventListener('click', function () {
     // add current round scroe to global scroe
     scores[activePlayer] += roundScore;
+
+    // update the UI
     document.getElementById(`score-${activePlayer}`).textContent = scores[activePlayer];
 
-    // change active player 
-    nextPlayer();
-
     // check if player won the game
-
+    if (scores[activePlayer] >= 10) {
+        document.getElementById(`name-${activePlayer}`).textContent = 'Winner!!'
+        document.querySelector('.dice').style.display = 'none';
+        document.querySelector(`.player-${activePlayer}-panel`).classList.add('winner');
+        document.querySelector(`.player-${activePlayer}-panel`).classList.remove('active');
+    } else {
+        // change active player 
+        nextPlayer();
+    }
 });
+
+document.querySelector('.btn-new').addEventListener('click', init)
+
+function init() {
+    scores = [0, 0];
+    roundScore = 0;
+    activePlayer = 0; // 0 : FirstPlayer , 1 : SecondPlayer
+
+    document.querySelector('.dice').style.display = 'none'; // setting the css property
+    document.getElementById('score-0').textContent = 0;
+    document.getElementById('score-1').textContent = 0;
+    document.getElementById('current-0').textContent = 0;
+    document.getElementById('current-1').textContent = 0;
+    document.getElementById('name-0').textContent = 'Player 1';
+    document.getElementById('name-1').textContent = 'Player 2';
+    document.querySelector(`.player-0-panel`).classList.remove('winner');
+    document.querySelector(`.player-1-panel`).classList.remove('winner');
+    document.querySelector(`.player-0-panel`).classList.remove('active');
+    document.querySelector(`.player-1-panel`).classList.remove('active');
+    document.querySelector(`.player-0-panel`).classList.add('active');
+}
 
 function nextPlayer() {
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
