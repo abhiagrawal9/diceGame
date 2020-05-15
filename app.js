@@ -22,7 +22,6 @@ document.getElementById('score-1').textContent = 0;
 document.getElementById('current-0').textContent = 0;
 document.getElementById('current-1').textContent = 0;
 
-
 document.querySelector('.btn-roll').addEventListener('click', function () {
     // generate random number
     let dice = Math.floor(Math.random() * 6 + 1);
@@ -30,33 +29,45 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
     // display the result
     var diceDOM = document.querySelector('.dice');
     diceDOM.style.display = 'block'; 
-    diceDOM.src = `dice-${dice}.png`;
+    diceDOM.src = `./diceImages/dice-${dice}.png`;
+    console.log(dice)
 
     // Update the round score if rolled number was not 1
     if (dice !== 1) {
         roundScore += dice;
         document.querySelector('#current-' + activePlayer).textContent = roundScore; // setter
     } else {
-        activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
-        roundScore = 0;
-        document.getElementById(`current-0`).textContent = 0;
-        document.getElementById(`current-1`).textContent = 0;
-
-        // document.querySelector('.player-0-panel').classList.remove('active');
-        // document.querySelector('.player-1-panel').classList.add('active');
-
-        // Toggle between active player screens 
-        document.querySelector('.player-0-panel').classList.toggle('active');
-        document.querySelector('.player-1-panel').classList.toggle('active');
-
-        //hiding the dice one active player changed
-        document.querySelector('.dice').style.display = 'none';
+        // change active player
+        nextPlayer();
     }
 });
 
 document.querySelector('.btn-hold').addEventListener('click', function () {
     // add current round scroe to global scroe
-    // update the UI
+    scores[activePlayer] += roundScore;
+    document.getElementById(`score-${activePlayer}`).textContent = scores[activePlayer];
+
+    // change active player 
+    nextPlayer();
+
     // check if player won the game
 
 });
+
+function nextPlayer() {
+    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
+    roundScore = 0;
+
+    // change current scores to 0 in UI
+    document.getElementById(`current-0`).textContent = 0;
+    document.getElementById(`current-1`).textContent = 0;
+
+    // Toggle between active player screens 
+    // document.querySelector('.player-0-panel').classList.remove('active');
+    // document.querySelector('.player-1-panel').classList.add('active');
+    document.querySelector('.player-0-panel').classList.toggle('active');
+    document.querySelector('.player-1-panel').classList.toggle('active');
+
+    // hide the dice
+    document.querySelector('.dice').style.display = 'none';
+}
