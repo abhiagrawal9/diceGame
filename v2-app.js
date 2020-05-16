@@ -1,14 +1,3 @@
-
-/*
-Changeing these rules:
-1. A player looses his ENTIRE score when he rolls two 6 in a row. After that, it's the next player's turn. 
-(Hint: Always save the previous dice roll in a separate variable)
-
-3. Another dice to the game, so that there are two dices now. The player looses his current score when one 
-of them is a 1. (Hint: you will need CSS to position the second dice, so take a look at the CSS code for the 
-first one.)
-*/
-
 "use strict";
 
 let scores, roundScore, activePlayer, gamePlaying, previousRole;
@@ -18,24 +7,36 @@ init();
 document.querySelector('.btn-roll').addEventListener('click', function () {
     if (gamePlaying) {
         // generate random number
-        let dice = Math.floor(Math.random() * 6 + 1);
+        let dice1 = Math.floor(Math.random() * 6 + 1);
+        let dice2 = Math.floor(Math.random() * 6 + 1);
        
         // display the result
-        let diceDOM = document.querySelector('.dice');
-        diceDOM.style.display = 'block';
-        diceDOM.src = `./images/dice-${dice}.png`;
+        let dice1DOM = document.querySelector('#dice-1');
+        let dice2DOM = document.querySelector('#dice-2');
+        dice1DOM.style.display = 'block';
+        dice2DOM.style.display = 'block';
+        dice1DOM.src = `./images/dice-${dice1}.png`;
+        dice2DOM.src = `./images/dice-${dice2}.png`;
 
-        // Update the round score if rolled number was not 1
-        if (dice === 6 && previousRole === 6) {
-            scores[activePlayer] = 0;
-            document.getElementById(`score-${activePlayer}`).textContent = '0';
-            nextPlayer();
-        }else if (dice !== 1) {
-            roundScore += dice;
+        //A player looses his ENTIRE score when he rolls two 6 in a row. After that, it's the next player's turn.
+        // if (dice === 6 && previousRole === 6) {
+        //     scores[activePlayer] = 0;
+        //     document.getElementById(`score-${activePlayer}`).textContent = '0';
+        //     nextPlayer();
+        // }else if (dice !== 1) {
+        //     roundScore += dice;
+        //     document.querySelector('#current-' + activePlayer).textContent = roundScore; // setter
+        //     previousRole = dice;
+        // } 
+        // else {
+        //     // change active player
+        //     nextPlayer();
+        // }
+        
+        if (!(dice1 ===1 || dice2 ===1)) {
+            roundScore += (dice1 +dice2);
             document.querySelector('#current-' + activePlayer).textContent = roundScore; // setter
-            previousRole = dice;
-        } 
-        else {
+        } else {
             // change active player
             nextPlayer();
         }
@@ -57,9 +58,9 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
         
         if (scores[activePlayer] >= winningScore) {
             document.getElementById(`name-${activePlayer}`).textContent = 'Winner!!'
-            document.querySelector('.dice').style.display = 'none';
             document.querySelector(`.player-${activePlayer}-panel`).classList.add('winner');
             document.querySelector(`.player-${activePlayer}-panel`).classList.remove('active');
+            hideDices();
             gamePlaying = false;
         } else {
             // change active player 
@@ -75,8 +76,8 @@ function init() {
     roundScore = 0;
     activePlayer = 0; // 0 : FirstPlayer , 1 : SecondPlayer
     gamePlaying = true;
+    hideDices();
     document.getElementById('target').value = '';
-    document.querySelector('.dice').style.display = 'none'; // setting the css property
     document.getElementById('score-0').textContent = 0;
     document.getElementById('score-1').textContent = 0;
     document.getElementById('current-0').textContent = 0;
@@ -103,7 +104,11 @@ function nextPlayer() {
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
 
-    // hide the dice
-    document.querySelector('.dice').style.display = 'none';
+    hideDices();
 }
 
+function hideDices() {
+    // hide the dices
+    document.getElementById('dice-1').style.display = 'none'; // setting the css property
+    document.getElementById('dice-2').style.display = 'none';
+}
